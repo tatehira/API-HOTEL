@@ -386,3 +386,13 @@ C:\Users\nickd\OneDrive\Documents\Projetos\API-Hoteis\Crud-Simples\ProductsApi\o
 C:\Users\nickd\OneDrive\Documents\Projetos\API-Hoteis\Crud-Simples\ProductsApi\obj\Debug\net7.0\ProductsApi.pdb
 C:\Users\nickd\OneDrive\Documents\Projetos\API-Hoteis\Crud-Simples\ProductsApi\obj\Debug\net7.0\ProductsApi.genruntimeconfig.cache
 C:\Users\nickd\OneDrive\Documents\Projetos\API-Hoteis\Crud-Simples\ProductsApi\obj\Debug\net7.0\ref\ProductsApi.dll
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.csproj.AssemblyReference.cache
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.AssemblyInfoInputs.cache
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.AssemblyInfo.cs
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.csproj.CoreCompileInputs.cache
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.MvcApplicationPartsAssemblyInfo.cs
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.MvcApplicationPartsAssemblyInfo.cache
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.dll
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\refint\ProductsApi.dll
+D:\Projetos\API-HOTEL\ProductsApi\obj\Debug\net7.0\ProductsApi.pdb

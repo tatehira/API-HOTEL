@@ -89,15 +89,16 @@ namespace ProductsApi.Controllers
         {
             Hotel aHotel = await _context.Hotels.FindAsync(regiao);
 
+            List<Hotel> hotelRecept = new List<Hotel>();
             List<Hotel> hotelInsert = new List<Hotel>();
+
+            foreach(var a in hotelRecept)
+            {
+                hotelInsert.Add(a);
+            }
 
             if (aHotel == null)
                 return NotFound();
-
-            if (aHotel.Regiao == Regiao.Sul || aHotel.Regiao == Regiao.Norte || aHotel.Regiao == Regiao.Leste && aHotel.Quarto.StatusQuarto == Status.Disponivel)
-            {
-                hotelInsert.Add(aHotel);
-            }
             
             return Ok(hotelInsert);
         }
