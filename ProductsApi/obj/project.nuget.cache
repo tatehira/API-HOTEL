@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HtMGdjwKO0zbdTYONmxSavjbRpJG0upq3QRJJT2swc/dK1ZIEJNBr2QLebopQn+GZdrqc7mkWJKA9SCteCA8sg==",
+  "dgSpecHash": "/J7K4RwKax1nkRWuptm8Yy766Z0ksCpA3Qh62e0WKRYor5sHJ5M+yUgkK+C+GpKJMt+fUmULhwAEDjxGAjfGDA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\nickd\\OneDrive\\Documents\\Projetos\\API-Hoteis\\Crud-Simples\\ProductsApi\\ProductsApi.csproj",
+  "projectFilePath": "D:\\Projetos\\API-HOTEL\\ProductsApi\\ProductsApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nickd\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\nickd\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
