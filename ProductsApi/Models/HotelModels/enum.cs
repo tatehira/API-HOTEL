@@ -2,15 +2,13 @@
 
 namespace ProductsApi.Models.HotelModels
 {
-    [Table("Quartos")]
-    public class Quarto
+    public enum ReservaEnum
     {
-        public int Id { get; set; }
-        public int NumeroQuarto { get; set; }
-        public TipoQuarto Tipo { get; set; }
-        public StatusEnum StatusQuarto { get; set; }
-        public List<Reserva> Reserva { get; set; }
+        Reservado = 0,
+        Processando = 1,
+        NaoReservado = 2
     }
+
 
     public enum TipoQuarto
     {
@@ -18,11 +16,20 @@ namespace ProductsApi.Models.HotelModels
         Deluxe = 1,
         SuitePresidencial = 2
     }
-    
+
     public enum StatusEnum
     {
         Disponivel = 0,
         Ocupado = 1,
         Manutencao = 2
     }
+
+
+    public enum Regiao
+    {
+        Sul = 0,
+        Norte = 1,
+        Leste = 2
+    }
+
 }

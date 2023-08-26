@@ -70,7 +70,7 @@ namespace ProductsApi.Controllers
         [Route("DeleteHotel")]
         public async Task<ActionResult> DeleteHotel(int id)
         {
-            var dbHotel = await _context.Hotels.FindAsync(id);
+            var dbHotel = await _context.Hotels.Where(i => i.Id == id).FirstOrDefaultAsync();
 
             if (dbHotel == null)
                 return NotFound();
@@ -82,25 +82,31 @@ namespace ProductsApi.Controllers
             return NoContent();
         }
 
-        // 
 
         [HttpGet]
         [Route("GetRegion")]
         public async Task<ActionResult<Hotel>> GetRegion(Regiao regiao)
         {
-            List<Hotel> aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
-
-            List<Hotel> hotelInsert = new List<Hotel>();
-
-            foreach(var a in aHotel)
+            try
             {
-                hotelInsert.Add(a);
+                List<Hotel> aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+                List<Hotel> hotelInsert = new List<Hotel>();
+
+                foreach (var a in aHotel)
+                {
+                    hotelInsert.Add(a);
+                }
+
+                return Ok(hotelInsert);
             }
 
-            if (aHotel == null)
-                return NotFound();
-            
-            return Ok(hotelInsert);
+            catch (Exception ex)
+            {
+                string error = "Ocorreu um erro na busca de acordo com a região!";
+
+                return BadRequest(error);
+            }
+           
         }
     }
 }

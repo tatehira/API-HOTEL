@@ -11,11 +11,20 @@ namespace ProductsApi.Models.HotelModels
         public List<Quarto> Quarto { get; set; }
         public Regiao Regiao { get; set; }
     }
-
-    public enum Regiao
+    public class Quarto
     {
-        Sul = 0,
-        Norte = 1,
-        Leste = 2
+        public int Id { get; set; }
+        public int NumeroQuarto { get; set; }
+        public TipoQuarto Tipo { get; set; }
+        public StatusEnum StatusQuarto { get; set; }
+        public List<Reserva> Reserva { get; set; }
+    }
+
+    public class Reserva
+    {
+        public int Id { get; set; }
+        public DateTime Entrada { get; set; }
+        public DateTime Saida { get; set; }
+        public ReservaEnum StatusReserva { get; set; }
     }
 }
