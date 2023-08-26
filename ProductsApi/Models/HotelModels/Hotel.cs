@@ -14,8 +14,8 @@ namespace ProductsApi.Models.HotelModels
 
     public enum Regiao
     {
-        Sul,
-        Norte,
-        Leste
+        Sul = 0,
+        Norte = 1,
+        Leste = 2
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace ProductsApi.Models.HotelModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ProductsApi.Models.HotelModels
 {
+    [Table("Reservas")]
     public class Reserva
     {
         public int Id { get; set; }
@@ -10,9 +13,9 @@
 
     public enum ReservaEnum
     { 
-        Reservado,
-        Processando,
-        NaoReservado
+        Reservado = 0,
+        Processando = 1,
+        NaoReservado = 2
     }
 
 }

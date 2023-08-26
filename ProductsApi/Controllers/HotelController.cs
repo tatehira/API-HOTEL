@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductsApi.Data;
 using ProductsApi.Models;
 using ProductsApi.Models.HotelModels;
+using System.Linq;
 
 namespace ProductsApi.Controllers
 {
@@ -87,12 +88,11 @@ namespace ProductsApi.Controllers
         [Route("GetRegion")]
         public async Task<ActionResult<Hotel>> GetRegion(Regiao regiao)
         {
-            Hotel aHotel = await _context.Hotels.FindAsync(regiao);
+            List<Hotel> aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
 
-            List<Hotel> hotelRecept = new List<Hotel>();
             List<Hotel> hotelInsert = new List<Hotel>();
 
-            foreach(var a in hotelRecept)
+            foreach(var a in aHotel)
             {
                 hotelInsert.Add(a);
             }
