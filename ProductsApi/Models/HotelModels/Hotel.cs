@@ -8,16 +8,17 @@ namespace ProductsApi.Models.HotelModels
         public int Id { get; set; }
         public double ValorDiaria { get; set; }
         public string NomeHotel { get; set; }
-        public List<Quarto> Quarto { get; set; }
         public Regiao Regiao { get; set; }
+        public List<Quarto> Quartos { get; set; }
     }
+
     public class Quarto
     {
         public int Id { get; set; }
         public int NumeroQuarto { get; set; }
         public TipoQuarto Tipo { get; set; }
         public StatusEnum StatusQuarto { get; set; }
-        public List<Reserva> Reserva { get; set; }
+        public List<Reserva> Reservas { get; set; }
     }
 
     public class Reserva

@@ -19,6 +19,9 @@ namespace ProductsApi.Data
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("ServerConnection"));
         }
 
-        public DbSet<Hotel> Hotels { get; set; } // Lista da classe que irá para o banco
+        // Lista da classe que irá para o banco
+        public DbSet<Hotel> Hotels { get; set; } 
+        public DbSet<Quarto> Quartos { get; set; }
+        public DbSet<Reserva> Reservas { get; set; }
     }
 }

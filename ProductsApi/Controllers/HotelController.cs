@@ -35,13 +35,29 @@ namespace ProductsApi.Controllers
         [Route("CreateHotel")]
         public async Task<IActionResult> CreateHotel(Hotel hotel)
         {
-            var context = await _context.Hotels.Where(a => a.NomeHotel.Contains(hotel.NomeHotel)).ToListAsync();
+            var contextHotel = await _context.Hotels.Where(a => a.NomeHotel == hotel.NomeHotel).ToListAsync();
 
-            foreach (var a in context)
+            var contextReserva = await _context.Reservas.Where(i => i.Id == hotel.Id).ToListAsync();
+
+            Hotel validationHotel = new Hotel();
+
+            Reserva ValidationReserva = new Reserva();
+
+            foreach (var a in contextHotel)
             {
-                if (a.NomeHotel == hotel.NomeHotel)
-                    throw new Exception("Hotel já cadastrado no banco!");
+                validationHotel.Adapt(a);
             }
+
+            foreach (var b in contextReserva)
+            {
+                ValidationReserva.Adapt(b);
+            }
+
+            if (validationHotel.NomeHotel == hotel.NomeHotel && validationHotel.Regiao == hotel.Regiao)
+                throw new Exception("Este hotel já está cadastrado nesta região! ");
+
+            if (ValidationReserva.Saida < ValidationReserva.Entrada)
+                throw new Exception("Data Saida menor que a data de Entrada! ");
 
             await _context.Hotels.AddAsync(hotel);
 
@@ -68,18 +84,31 @@ namespace ProductsApi.Controllers
 
         [HttpDelete]
         [Route("DeleteHotel")]
-        public async Task<ActionResult> DeleteHotel(int id)
+        public async Task<ActionResult> DeleteHotel(string nome)
         {
-            var dbHotel = await _context.Hotels.Where(i => i.Id == id).FirstOrDefaultAsync();
+            var dbHotel = await _context.Hotels.Where(i => i.NomeHotel == nome).FirstOrDefaultAsync();
+            var dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
+            var dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
 
-            if (dbHotel == null)
-                return NotFound();
+            if (dbHotel == null && dbQuarto == null && dbReserva == null)
+                throw new Exception("Não há Hotel/Quarto/Reserva com Id informado! ");
 
-            _context.Hotels.Remove(dbHotel);
+            try
+            {
+                _context.Hotels.Remove(dbHotel);
+                _context.Quartos.Remove(dbQuarto);
+                _context.Reservas.Remove(dbReserva);
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                return Ok("Hotel removido com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                string error = "Não foi possível remover do sistema!";
+
+                return BadRequest(error);
+            }
         }
 
 
