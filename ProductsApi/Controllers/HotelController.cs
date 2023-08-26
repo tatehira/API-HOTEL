@@ -54,10 +54,10 @@ namespace ProductsApi.Controllers
             }
 
             if (validationHotel.NomeHotel == hotel.NomeHotel && validationHotel.Regiao == hotel.Regiao)
-                throw new Exception("Este hotel já está cadastrado nesta região! ");
+                return BadRequest("Este hotel já está cadastrado nesta região! ");
 
             if (ValidationReserva.Saida < ValidationReserva.Entrada)
-                throw new Exception("Data Saida menor que a data de Entrada! ");
+                return BadRequest("Data Saida menor que a data de Entrada! ");
 
             await _context.Hotels.AddAsync(hotel);
 
@@ -87,11 +87,13 @@ namespace ProductsApi.Controllers
         public async Task<ActionResult> DeleteHotel(string nome)
         {
             var dbHotel = await _context.Hotels.Where(i => i.NomeHotel == nome).FirstOrDefaultAsync();
+
+            if (dbHotel == null)
+                return BadRequest("Não há Hotel com Id informado! ");
+
             var dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
             var dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
 
-            if (dbHotel == null && dbQuarto == null && dbReserva == null)
-                throw new Exception("Não há Hotel/Quarto/Reserva com Id informado! ");
 
             try
             {
@@ -105,24 +107,26 @@ namespace ProductsApi.Controllers
             }
             catch (Exception ex)
             {
-                string error = "Não foi possível remover do sistema!";
-
-                return BadRequest(error);
+                return BadRequest("Não foi possível remover do sistema!");
             }
         }
 
 
         [HttpGet]
         [Route("GetRegion")]
-        public async Task<ActionResult<Hotel>> GetRegion(Regiao regiao)
+        public ActionResult<Hotel> GetRegion(Regiao regiao)
         {
             try
             {
-                List<Hotel> aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+                var aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+
                 List<Hotel> hotelInsert = new List<Hotel>();
+
+                var hotel = _context.Hotels.Include(h => h.Quartos).Include(h => h.Reservas).FirstOrDefault(a => a.Id == hotelId);
 
                 foreach (var a in aHotel)
                 {
+                    a.Quartos = _context.Quartos.Where(i => i.Id == a.Id).ToList();
                     hotelInsert.Add(a);
                 }
 
@@ -131,11 +135,9 @@ namespace ProductsApi.Controllers
 
             catch (Exception ex)
             {
-                string error = "Ocorreu um erro na busca de acordo com a região!";
-
-                return BadRequest(error);
+                return BadRequest("Ocorreu um erro na busca de acordo com a região!");
             }
-           
+
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ProductsApi.Data
         }
 
         // Lista da classe que irá para o banco
-        public DbSet<Hotel> Hotels { get; set; } 
+        public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Quarto> Quartos { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
     }
