@@ -43,7 +43,7 @@ namespace ProductsApi.Controllers
 
             hotel.NomeHotel = nomeHotel;
             hotel.Regiao = regiaoHotel;
-            hotel.SenhaHotel = new Guid();
+            hotel.SenhaHotel = Guid.NewGuid();
             await _context.Hotels.AddAsync(hotel);
             await _context.SaveChangesAsync();
 
@@ -51,12 +51,14 @@ namespace ProductsApi.Controllers
         }
 
         [HttpPost("CreateQuartos")]
-        public async Task<ActionResult> CreateQuarto(Quarto quarto)
+        public async Task<ActionResult> CreateQuarto(Quarto quarto, Guid key)
         {
-            List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel.Equals(quarto)).ToList();
+            quarto.HotelKey = key;
 
-            if(HotelKey == null)
-                return BadRequest("A senha do hotel está incorreta!");
+            List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
+
+            if(!HotelKey.Equals(key))
+                return BadRequest("Não foi localizado hotel com essa chave!");
 
             if (quarto.NumeroQuarto < 0)
                 return BadRequest("O número do quarto não pode ser negativo!");
