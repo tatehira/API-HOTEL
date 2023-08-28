@@ -57,13 +57,12 @@ namespace ProductsApi.Controllers
 
             List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
 
-            if(HotelKey == null)
+            if (HotelKey == null)
                 return BadRequest("Não foi localizado hotel com essa chave!");
-
 
             if (quarto.NumeroQuarto < 0)
                 return BadRequest("O número do quarto não pode ser negativo!");
-
+            
             await _context.Quartos.AddAsync(quarto);
 
             await _context.SaveChangesAsync();
@@ -117,26 +116,26 @@ namespace ProductsApi.Controllers
         [HttpGet("GetRegion")]
         public ActionResult<Hotel> GetRegion(Regiao regiao)
         {
-            try
+            var aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+            
+            if (aHotel == null)
+                return BadRequest("Região não localizada!");
+
+            List<Hotel> hotelInsert = new List<Hotel>();
+
+            foreach (var a in aHotel)
             {
-                var aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+                var findId= _context.Quartos.Where(i => i.Id == a.Id).ToList();
+                
+                if (findId == null)
+                    return BadRequest("Não foi encontrado quarto com Id correspondente!");
 
-                List<Hotel> hotelInsert = new List<Hotel>();
+                a.Quartos = findId;
 
-                foreach (var a in aHotel)
-                {
-                    a.Quartos = _context.Quartos.Where(i => i.Id == a.Id).ToList();
-                    hotelInsert.Add(a);
-                }
-
-                return Ok(hotelInsert);
+                hotelInsert.Add(a);
             }
 
-            catch (Exception ex)
-            {
-                return BadRequest("Ocorreu um erro na busca de acordo com a região!");
-            }
-
+            return Ok(hotelInsert);
         }
     }
 }
