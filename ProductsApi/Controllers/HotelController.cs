@@ -50,28 +50,53 @@ namespace ProductsApi.Controllers
         public async Task<ActionResult> CreateHotel(string nomeHotel, Regiao regiaoHotel)
         {
             Hotel hotel = new Hotel();
-            if(hotel == null)
-                return BadRequest("O hotel está nulo! Revise os campos.");
+
+            if(nomeHotel == null)
+                return BadRequest("O noem do hotel está nulo! Revise os campos.");
 
             bool IsNumerable = int.TryParse(nomeHotel, out _);
+
             if (IsNumerable)
                 return BadRequest("Digite um nome válido para o hotel!");
 
             hotel.NomeHotel = nomeHotel;
+
             hotel.Regiao = regiaoHotel;
+
             hotel.SenhaHotel = Guid.NewGuid();
+
             await _context.Hotels.AddAsync(hotel);
+
             await _context.SaveChangesAsync();
 
-            return Ok($"Hotel cadastrado! Salve a senha para adicionar futuros quartos: {hotel.SenhaHotel}");
+            return Ok($"Hotel cadastrado! Salve a senha para adicionar futuros quartos: {hotel.SenhaHotel.ToString()}");
         }
 
         [HttpPost("CreateQuartos")]
-        public async Task<ActionResult> CreateQuarto(Quarto quarto, Guid key)
+        public async Task<ActionResult> CreateQuarto(int NumQuarto, int Diaria, TipoQuarto tipo, StatusEnum statusQuarto, Guid key)
         {
-            quarto.HotelKey = key;
+            Quarto quarto = new Quarto()
+            {
+                NumeroQuarto = NumQuarto,
+                ValorDiaria = Diaria,
+                Tipo = tipo,
+                StatusQuarto = statusQuarto,
+                HotelKey = key
+            };
+
+            if(NumQuarto == 0 || NumQuarto < 0)
+                return BadRequest("O Número do quarto inválido!");
+
+            if(Diaria == null)
+                return BadRequest("Preencha o valor da diária!");
 
             List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
+
+            foreach(Hotel hotel in HotelKey)
+            {
+                if (key != hotel.SenhaHotel)
+                    return BadRequest("Senha do hotél inválida!");
+            }
 
             if (HotelKey == null)
                 return BadRequest("Não foi localizado hotel com essa chave!");
@@ -104,18 +129,22 @@ namespace ProductsApi.Controllers
         [HttpDelete("DeleteHotel")]
         public async Task<ActionResult> DeleteHotel(string nome)
         {
-            var dbHotel = await _context.Hotels.Where(i => i.NomeHotel == nome).FirstOrDefaultAsync();
+            Hotel dbHotel = await _context.Hotels.Where(i => i.NomeHotel == nome).FirstOrDefaultAsync();
 
             if (dbHotel == null)
                 return BadRequest("Não há Hotel com Id informado! ");
 
-            var dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
-            var dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
+            Quarto dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
+          
+            Reserva dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
+
 
             try
             {
                 _context.Hotels.Remove(dbHotel);
+
                 _context.Quartos.Remove(dbQuarto);
+
                 _context.Reservas.Remove(dbReserva);
 
                 await _context.SaveChangesAsync();
@@ -127,7 +156,6 @@ namespace ProductsApi.Controllers
                 return BadRequest("Não foi possível remover do sistema!");
             }
         }
-
 
         [HttpGet("GetRegion")]
         public ActionResult<Hotel> GetRegion(Regiao regiao)

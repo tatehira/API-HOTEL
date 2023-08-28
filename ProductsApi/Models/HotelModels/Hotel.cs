@@ -12,6 +12,7 @@ namespace ProductsApi.Models.HotelModels
         public List<Quarto> Quartos { get; set; }
     }
 
+    [Table("Quartos")]
     public class Quarto
     {
         public int Id { get; set; }
@@ -22,7 +23,8 @@ namespace ProductsApi.Models.HotelModels
         public StatusEnum StatusQuarto { get; set; }
         public List<Reserva> Reservas { get; set; }
     }
-
+    
+    [Table("Reservas")]
     public class Reserva
     {
         public int Id { get; set; }
