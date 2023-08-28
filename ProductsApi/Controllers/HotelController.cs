@@ -27,7 +27,23 @@ namespace ProductsApi.Controllers
             if (aHotel == null)
                 return NotFound("Não foi localizado o hotel informado!");
 
-            return Ok(aHotel);
+            List<Hotel> hotel = new List<Hotel>();
+
+            List<Hotel> getHotels = await _context.Hotels.Where(i => i.Id == id).ToListAsync();
+
+            foreach (var model in getHotels)
+            {
+                hotel.Add(model);
+
+                List<Quarto> getQuartos = await _context.Quartos.Where(k => k.HotelKey == model.SenhaHotel).ToListAsync();
+                
+                foreach(var a in hotel)
+                {
+                    a.Quartos = getQuartos;
+                }
+            }
+
+            return Ok(hotel);
         }
 
         [HttpPost("CreateHotel")]
@@ -67,7 +83,7 @@ namespace ProductsApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Hotel criado com sucesso! \n" + HotelKey);
+            return Ok("Hotel criado com sucesso! \n" + quarto);
         }
 
         [HttpPut("UpdateHotel")]
