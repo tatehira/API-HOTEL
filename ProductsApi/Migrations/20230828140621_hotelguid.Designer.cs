@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductsApi.Data;
 
@@ -11,9 +12,11 @@ using ProductsApi.Data;
 namespace ProductsApi.Migrations
 {
     [DbContext(typeof(HotelsContext))]
-    partial class HotelsContextModelSnapshot : ModelSnapshot
+    [Migration("20230828140621_hotelguid")]
+    partial class hotelguid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,9 +39,6 @@ namespace ProductsApi.Migrations
                     b.Property<int>("Regiao")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("SenhaHotel")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.ToTable("Hotels");
@@ -54,9 +54,6 @@ namespace ProductsApi.Migrations
 
                     b.Property<int?>("HotelId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("HotelKey")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("NumeroQuarto")
                         .HasColumnType("int");

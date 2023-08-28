@@ -19,59 +19,55 @@ namespace ProductsApi.Controllers
             _context = context;
         }
 
-        [HttpGet("GetHotel/{id}")]
+        [HttpGet]
+        [Route("GetHotel/{id}")]
         public async Task<ActionResult<Hotel>> GetHotel(int id)
         {
             Hotel aHotel = await _context.Hotels.FindAsync(id);
 
             if (aHotel == null)
-                return NotFound("Não foi localizado o hotel informado!");
+                return NotFound();
 
             return Ok(aHotel);
         }
 
-        [HttpPost("CreateHotel")]
-        public async Task<ActionResult> CreateHotel(string nomeHotel, Regiao regiaoHotel)
+        [HttpPost]
+        [Route("CreateHotel")]
+        public async Task<IActionResult> CreateHotel(Hotel hotel)
         {
-            Hotel hotel = new Hotel();
-            if(hotel == null)
-                return BadRequest("O hotel está nulo! Revise os campos.");
+            var contextHotel = await _context.Hotels.Where(a => a.NomeHotel == hotel.NomeHotel).ToListAsync();
 
-            bool IsNumerable = int.TryParse(nomeHotel, out _);
-            if (IsNumerable)
-                return BadRequest("Digite um nome válido para o hotel!");
+            var contextReserva = await _context.Reservas.Where(i => i.Id == hotel.Id).ToListAsync();
 
-            hotel.NomeHotel = nomeHotel;
-            hotel.Regiao = regiaoHotel;
-            hotel.SenhaHotel = new Guid();
-            await _context.Hotels.AddAsync(hotel);
-            await _context.SaveChangesAsync();
+            Hotel validationHotel = new Hotel();
 
-            return Ok($"Hotel cadastrado! Salve a senha para adicionar futuros quartos: {hotel.SenhaHotel}");
-        }
+            Reserva ValidationReserva = new Reserva();
 
-        [HttpPost("CreateQuartos")]
-        public async Task<ActionResult> CreateQuarto(Quarto quarto)
-        {
-            List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel.Equals(quarto)).ToList();
-
-            if(HotelKey == null)
-                return BadRequest("A senha do hotel está incorreta!");
-
-            if (quarto.NumeroQuarto < 0)
-                return BadRequest("O número do quarto não pode ser negativo!");
-
-            foreach (Hotel hotelAdd in HotelKey)
+            foreach (var a in contextHotel)
             {
-                hotelAdd.Quartos.Add(quarto);
-               
-                await _context.SaveChangesAsync();
+                validationHotel.Adapt(a);
             }
 
-            return Ok("Hotel criado com sucesso! \n" + HotelKey);
+            foreach (var b in contextReserva)
+            {
+                ValidationReserva.Adapt(b);
+            }
+
+            if (validationHotel.NomeHotel == hotel.NomeHotel && validationHotel.Regiao == hotel.Regiao)
+                return BadRequest("Este hotel já está cadastrado nesta região! ");
+
+            if (ValidationReserva.Saida < ValidationReserva.Entrada)
+                return BadRequest("Data Saida menor que a data de Entrada! ");
+
+            await _context.Hotels.AddAsync(hotel);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(hotel);
         }
 
-        [HttpPut("UpdateHotel")]
+        [HttpPut]
+        [Route("UpdateHotel")]
         public async Task<ActionResult> UpdateHotel(Hotel hotel)
         {
             var dbHotel = await _context.Hotels.FindAsync(hotel.Id);
@@ -86,7 +82,8 @@ namespace ProductsApi.Controllers
             return Ok(hotel);
         }
 
-        [HttpDelete("DeleteHotel")]
+        [HttpDelete]
+        [Route("DeleteHotel")]
         public async Task<ActionResult> DeleteHotel(string nome)
         {
             var dbHotel = await _context.Hotels.Where(i => i.NomeHotel == nome).FirstOrDefaultAsync();
@@ -96,6 +93,7 @@ namespace ProductsApi.Controllers
 
             var dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
             var dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
+
 
             try
             {
@@ -114,7 +112,8 @@ namespace ProductsApi.Controllers
         }
 
 
-        [HttpGet("GetRegion")]
+        [HttpGet]
+        [Route("GetRegion")]
         public ActionResult<Hotel> GetRegion(Regiao regiao)
         {
             try
