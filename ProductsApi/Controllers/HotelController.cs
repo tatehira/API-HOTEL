@@ -57,18 +57,16 @@ namespace ProductsApi.Controllers
 
             List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
 
-            if(!HotelKey.Equals(key))
+            if(HotelKey == null)
                 return BadRequest("Não foi localizado hotel com essa chave!");
+
 
             if (quarto.NumeroQuarto < 0)
                 return BadRequest("O número do quarto não pode ser negativo!");
 
-            foreach (Hotel hotelAdd in HotelKey)
-            {
-                hotelAdd.Quartos.Add(quarto);
-               
-                await _context.SaveChangesAsync();
-            }
+            await _context.Quartos.AddAsync(quarto);
+
+            await _context.SaveChangesAsync();
 
             return Ok("Hotel criado com sucesso! \n" + HotelKey);
         }
