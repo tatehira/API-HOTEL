@@ -193,5 +193,48 @@ namespace ProductsApi.Controllers
 
             return Ok(hotelInsert);
         }
+
+        [HttpPost("CreateReserva")]
+        public async Task<ActionResult<Hotel>> CreateReserva(string nomeHotel, int numeroQuarto, Reserva reserva)
+        {
+            List<Hotel> getHotel = await _context.Hotels.Where(h => h.NomeHotel == nomeHotel).ToListAsync();
+
+            List<Quarto> getQuarto = await _context.Quartos.Where(q => q.NumeroQuarto == numeroQuarto).ToListAsync();
+
+            List<Quarto> quarto = new List<Quarto>();
+            
+            Hotel hotels = new Hotel();
+
+            Reserva reservaInsert = new Reserva();
+
+            reservaInsert.Entrada = reserva.Entrada;
+            reservaInsert.Saida = reserva.Saida;
+            reservaInsert.StatusReserva = ReservaEnum.Reservado;
+
+            List<Reserva> reservaList = new List<Reserva>();
+
+            reservaList.Add(reservaInsert);
+
+            foreach (var a in getQuarto)
+            {
+                a.Reservas = reservaList;
+
+                quarto.Add(a);              
+            }
+
+            foreach (var a in getHotel)
+            {
+                hotels.NomeHotel = nomeHotel;
+                hotels.SenhaHotel = a.SenhaHotel;
+                hotels.Quartos = quarto;
+                hotels.Regiao = a.Regiao;
+            }
+
+            await _context.AddAsync(reservaInsert);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(hotels);
+        }
     }
 }
