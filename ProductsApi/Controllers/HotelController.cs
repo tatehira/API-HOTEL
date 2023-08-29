@@ -84,12 +84,19 @@ namespace ProductsApi.Controllers
                 HotelKey = key
             };
 
+            var getQuarto = _context.Quartos.Find(NumQuarto);
+
+            if (getQuarto.NumeroQuarto == NumQuarto)
+                return BadRequest("Já foi cadastrado um quarto com esse número!");
+
             if(NumQuarto == 0 || NumQuarto < 0)
                 return BadRequest("O Número do quarto inválido!");
 
             List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
 
             Hotel hotel1 = new Hotel();
+
+            Quarto quarto1 = new Quarto();
 
             foreach(Hotel hotel in HotelKey)
             {
@@ -138,7 +145,6 @@ namespace ProductsApi.Controllers
             Quarto dbQuarto = await _context.Quartos.Where(q => q.Id == dbHotel.Id).FirstOrDefaultAsync();
           
             Reserva dbReserva = await _context.Reservas.Where(r => r.Id == dbHotel.Id).FirstOrDefaultAsync();
-
 
             try
             {
