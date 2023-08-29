@@ -87,19 +87,20 @@ namespace ProductsApi.Controllers
             if(NumQuarto == 0 || NumQuarto < 0)
                 return BadRequest("O Número do quarto inválido!");
 
-            if(Diaria == null)
-                return BadRequest("Preencha o valor da diária!");
-
             List<Hotel> HotelKey = _context.Hotels.Where(k => k.SenhaHotel == key).ToList();
+
+            Hotel hotel1 = new Hotel();
 
             foreach(Hotel hotel in HotelKey)
             {
-                if (key != hotel.SenhaHotel)
-                    return BadRequest("Senha do hotél inválida!");
+                hotel1.SenhaHotel = hotel.SenhaHotel;
             }
 
-            if (HotelKey == null)
-                return BadRequest("Não foi localizado hotel com essa chave!");
+            if (hotel1.SenhaHotel != key)
+                return BadRequest("Senha do hotél inválida!");
+
+            if (hotel1.SenhaHotel == Guid.Empty)
+                return BadRequest("Preencha a chave do hotel!");
 
             if (quarto.NumeroQuarto < 0)
                 return BadRequest("O número do quarto não pode ser negativo!");
@@ -108,7 +109,7 @@ namespace ProductsApi.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok("Hotel criado com sucesso! \n" + quarto);
+            return Ok("Quarto criado com sucesso!");
         }
 
         [HttpPut("UpdateHotel")]
@@ -158,19 +159,19 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("GetRegion")]
-        public ActionResult<Hotel> GetRegion(Regiao regiao)
+        public ActionResult<Hotel> GetHotelDisponivel(Regiao regiao)
         {
-            var aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
-            
-            if (aHotel == null)
-                return BadRequest("Região não localizada!");
+            List<Hotel> aHotel = _context.Hotels.Where(r => r.Regiao == regiao).ToList();
+
+            if (aHotel.Count == 0)
+                return BadRequest("Sem hotel disponível na região!");
 
             List<Hotel> hotelInsert = new List<Hotel>();
 
             foreach (var a in aHotel)
             {
-                var findId= _context.Quartos.Where(i => i.Id == a.Id).ToList();
-                
+                List<Quarto> findId = _context.Quartos.Where(k =>k.HotelKey == a.SenhaHotel).Where(s => s.StatusQuarto == StatusEnum.Disponivel).ToList();
+
                 if (findId == null)
                     return BadRequest("Não foi encontrado quarto com Id correspondente!");
 
