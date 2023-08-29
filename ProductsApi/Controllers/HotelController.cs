@@ -120,18 +120,23 @@ namespace ProductsApi.Controllers
         }
 
         [HttpPut("UpdateHotel")]
-        public async Task<ActionResult> UpdateHotel(Hotel hotel)
+        public async Task<ActionResult> UpdateHotel(string nomeAntigo, string nomeNovo, Regiao regiaoAntiga, Regiao regiaoNova)
         {
-            var dbHotel = await _context.Hotels.FindAsync(hotel.Id);
+            List<Hotel> hotelsToUpdate = await _context.Hotels.Where(n => n.NomeHotel == nomeAntigo && n.Regiao == regiaoAntiga).ToListAsync();
 
-            if (dbHotel == null)
-                return NotFound();
+            if (hotelsToUpdate.Count == 0)
+                return NotFound("Hotel não econtrado!");
 
-            dbHotel.Adapt(hotel);
+            foreach(var model in hotelsToUpdate)
+            {
+                model.NomeHotel = nomeNovo;
+                model.Regiao = regiaoNova;
+                model.SenhaHotel = model.SenhaHotel;
+            }
 
             await _context.SaveChangesAsync();
 
-            return Ok(hotel);
+            return Ok(hotelsToUpdate);
         }
 
         [HttpDelete("DeleteHotel")]
