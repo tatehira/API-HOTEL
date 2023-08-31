@@ -38,8 +38,8 @@ namespace ProductsApi.Controllers
                 hotel.Add(model);
 
                 List<Quarto> getQuartos = await _context.Quartos.Where(i => i.HotelId == id).ToListAsync();
-                
-                foreach(var a in hotel)
+
+                foreach (var a in hotel)
                 {
                     a.Quartos = getQuartos;
                 }
@@ -81,7 +81,7 @@ namespace ProductsApi.Controllers
         public async Task<ActionResult> CreateQuarto(int numQuarto, int diaria, TipoQuarto tipo, StatusEnum statusQuarto, int hotelId)
         {
             List<Hotel> findHotel = _context.Hotels.Where(i => i.Id == hotelId).ToList();
-            
+
             Quarto getQuarto = await _context.Quartos.FindAsync(numQuarto);
 
             if (getQuarto != null)
@@ -110,7 +110,7 @@ namespace ProductsApi.Controllers
 
             quartoInsert.Add(objQuarto);
 
-            foreach(Hotel hotel in findHotel)
+            foreach (Hotel hotel in findHotel)
             {
                 hotel.Quartos = quartoInsert;
             }
@@ -128,7 +128,7 @@ namespace ProductsApi.Controllers
             if (hotelsToUpdate.Count == 0)
                 return NotFound("Hotel não econtrado!");
 
-            foreach(var model in hotelsToUpdate)
+            foreach (var model in hotelsToUpdate)
             {
                 model.NomeHotel = nomeNovo;
                 model.Regiao = regiaoNova;
@@ -198,7 +198,7 @@ namespace ProductsApi.Controllers
             List<Quarto> getQuarto = await _context.Quartos.Where(q => q.NumeroQuarto == numeroQuarto).ToListAsync();
 
             List<Quarto> quarto = new List<Quarto>();
-            
+
             Hotel hotels = new Hotel();
 
             Reserva reservaInsert = new Reserva();
@@ -215,7 +215,7 @@ namespace ProductsApi.Controllers
             {
                 a.Reservas = reservaList;
 
-                quarto.Add(a);              
+                quarto.Add(a);
             }
 
             foreach (var a in getHotel)
