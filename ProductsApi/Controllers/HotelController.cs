@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using ProductsApi.Data;
 using ProductsApi.Models;
 using ProductsApi.Models.HotelModels;
+using System.Collections;
+using System.Data.SqlTypes;
 using System.Linq;
 
 namespace ProductsApi.Controllers
@@ -66,7 +68,6 @@ namespace ProductsApi.Controllers
             {
                 NomeHotel = nomeHotel,
                 Regiao = regiaoHotel,
-                HotelId = getHotelId.Id
             };
 
             await _context.Hotels.AddAsync(hotel);
@@ -79,7 +80,21 @@ namespace ProductsApi.Controllers
         [HttpPost("CreateQuartos")]
         public async Task<ActionResult> CreateQuarto(int numQuarto, int diaria, TipoQuarto tipo, StatusEnum statusQuarto, int hotelId)
         {
-            List<Hotel> findHotel = _context.Hotels.Where(i => i.HotelId == hotelId).ToList();
+            List<Hotel> findHotel = _context.Hotels.Where(i => i.Id == hotelId).ToList();
+            
+            Quarto getQuarto = await _context.Quartos.FindAsync(numQuarto);
+
+            if (getQuarto != null)
+                return BadRequest("Já possui quarto cadastrado com esse número!");
+
+            if (findHotel.Count == 0)
+                return BadRequest("Não há hotel com o identificador informado");
+
+            if (numQuarto == 0)
+                return BadRequest("O Número do quarto não pode ser 0!");
+
+            if (numQuarto < 0)
+                return BadRequest("O número do quarto não pode ser negativo!");
 
             Quarto objQuarto = new Quarto();
             {
@@ -91,25 +106,7 @@ namespace ProductsApi.Controllers
                 objQuarto.ValorDiaria = diaria;
             }
 
-            Quarto getQuarto = _context.Quartos.Find(numQuarto);
-
-            if (getQuarto != null)
-                return BadRequest("Já foi cadastrado um quarto com esse número!");
-
-            if (numQuarto == 0 || numQuarto < 0)
-                return BadRequest("O Número do quarto inválido!");
-
-            if (numQuarto < 0)
-                return BadRequest("O número do quarto não pode ser negativo!");
-
-
-            if(findHotel.Count == 0)
-                return BadRequest("Não há hotel com o identificador informado");
-
-            Hotel objHotel = new Hotel();
-
             List<Quarto> quartoInsert = new List<Quarto>();
-
 
             quartoInsert.Add(objQuarto);
 
@@ -135,7 +132,6 @@ namespace ProductsApi.Controllers
             {
                 model.NomeHotel = nomeNovo;
                 model.Regiao = regiaoNova;
-                model.HotelId = model.HotelId;
             }
 
             await _context.SaveChangesAsync();
@@ -157,6 +153,7 @@ namespace ProductsApi.Controllers
                 _context.Quartos.Remove(dbQuarto);
 
             Reserva dbReserva = await _context.Reservas.Where(r => r.QuartoId == dbHotel.Id).FirstOrDefaultAsync();
+
             if (dbReserva != null)
                 _context.Reservas.Remove(dbReserva);
 
@@ -224,7 +221,7 @@ namespace ProductsApi.Controllers
             foreach (var a in getHotel)
             {
                 hotels.NomeHotel = nomeHotel;
-                hotels.HotelId = a.HotelId;
+                hotels.Id = a.Id;
                 hotels.Quartos = quarto;
                 hotels.Regiao = a.Regiao;
             }
@@ -235,5 +232,14 @@ namespace ProductsApi.Controllers
 
             return Ok(hotels);
         }
+
+
+        #region Métodos
+        public async Task<bool> GetQuartoCadastrado(int numQuarto)
+        {
+            return await _context.Quartos.AnyAsync(i => i.NumeroQuarto == numQuarto);
+        }
+        #endregion Métodos
+
     }
 }

@@ -6,7 +6,6 @@ namespace ProductsApi.Models.HotelModels
     public class Hotel
     {
         public int Id { get; set; }
-        public int HotelId { get; set; }
         public string NomeHotel { get; set; }
         public Regiao Regiao { get; set; }
         public List<Quarto> Quartos { get; set; }
