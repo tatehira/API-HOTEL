@@ -2,7 +2,6 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>API de Hotel</title>
 </head>
 <body>
 
