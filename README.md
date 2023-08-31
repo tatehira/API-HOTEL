@@ -7,7 +7,7 @@
 
 <h1>API de Hotel</h1>
 
-<p>Esta API permite criar, atualizar, excluir e obter hotéis e quartos. Você também pode criar reservas para quartos.</p>
+<h2>Esta API permite criar, atualizar, excluir e obter hotéis e quartos. Você também pode criar reservas para quartos.</h2>
 
 <p>Os seguintes pacotes estão instalados no projeto:</p>
 
