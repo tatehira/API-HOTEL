@@ -27,8 +27,8 @@
 
 <p>O arquivo program é o ponto de entrada da API. Ele inicia o servidor da API e registra os controllers.</p>
 
-
-<p>Os seguintes pacotes estão instalados no projeto:</p>
+<hr>
+<h3>Os seguintes pacotes estão instalados no projeto:</h3>
 
 <ul>
   <li><strong>Mapster</strong>: Um pacote que permite mapear objetos .NET para modelos JSON.</li>
