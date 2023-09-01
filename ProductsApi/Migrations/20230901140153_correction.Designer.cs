@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductsApi.Data;
 
@@ -11,9 +12,11 @@ using ProductsApi.Data;
 namespace ProductsApi.Migrations
 {
     [DbContext(typeof(HotelsContext))]
-    partial class HotelsContextModelSnapshot : ModelSnapshot
+    [Migration("20230901140153_correction")]
+    partial class correction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,6 +89,9 @@ namespace ProductsApi.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("QuartoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReservaId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Saida")

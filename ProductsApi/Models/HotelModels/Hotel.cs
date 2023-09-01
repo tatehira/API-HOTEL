@@ -28,7 +28,6 @@ namespace ProductsApi.Models.HotelModels
     public class Reserva
     {
         public int Id { get; set; }
-        public int ReservaId { get; set; }
         public int QuartoId { get; set; }
         public DateTime Entrada { get; set; }
         public DateTime Saida { get; set; }

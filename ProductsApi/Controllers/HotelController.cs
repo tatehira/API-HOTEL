@@ -82,10 +82,10 @@ namespace ProductsApi.Controllers
         {
             List<Hotel> findHotel = _context.Hotels.Where(i => i.Id == hotelId).ToList();
 
-            Quarto getQuarto = await _context.Quartos.FindAsync(numQuarto);
+            bool GetQuartoCadastrado = await _context.Quartos.AnyAsync(i => i.NumeroQuarto == numQuarto && i.QuartoId == hotelId);
 
-            if (getQuarto != null)
-                return BadRequest("Já possui quarto cadastrado com esse número!");
+            if (GetQuartoCadastrado == true)
+                return BadRequest("Já possui quarto com esse número nesse hotel!");
 
             if (findHotel.Count == 0)
                 return BadRequest("Não há hotel com o identificador informado");
@@ -126,7 +126,7 @@ namespace ProductsApi.Controllers
             List<Hotel> hotelsToUpdate = await _context.Hotels.Where(n => n.NomeHotel == nomeAntigo && n.Regiao == regiaoAntiga).ToListAsync();
 
             if (hotelsToUpdate.Count == 0)
-                return NotFound("Hotel não econtrado!");
+                return NotFound("Hotel não econtrado nessa região!");
 
             foreach (var model in hotelsToUpdate)
             {
@@ -232,14 +232,5 @@ namespace ProductsApi.Controllers
 
             return Ok(hotels);
         }
-
-
-        #region Métodos
-        public async Task<bool> GetQuartoCadastrado(int numQuarto)
-        {
-            return await _context.Quartos.AnyAsync(i => i.NumeroQuarto == numQuarto);
-        }
-        #endregion Métodos
-
     }
 }
